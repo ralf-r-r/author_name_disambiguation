@@ -60,7 +60,7 @@ def create_contribution_pairs(df: pd.DataFrame, n: int) -> pd.DataFrame:
 
     count = 0
     for k in range(0, array.shape[0]):
-        if k % 250 == 0:
+        if k % 1000 == 0:
             print("created pairs for", k, " of ", array.shape[0], " contributions")
         for m in range(k, array.shape[0]):
             values1 = array[k]
@@ -77,5 +77,5 @@ def create_contribution_pairs(df: pd.DataFrame, n: int) -> pd.DataFrame:
     columns.extend(columns_part_2)
     df_pairs = pd.DataFrame.from_dict(data_dict, orient='index', columns=columns)
     df_pairs["same_person"] = df_pairs["personId_2nd"] == df_pairs["personId"]
-
+    df_pairs["same_person"] = df_pairs["same_person"].astype(int)
     return df_pairs
