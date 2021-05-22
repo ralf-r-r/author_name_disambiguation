@@ -1,9 +1,9 @@
 import pandas as pd
 from typing import List
 import random
+import numpy as np
 
-
-__all__ = ['combine_data_sets', 'create_train_test']
+__all__ = ['combine_data_sets', 'create_train_test', 'create_contribution_pairs']
 
 
 def combine_data_sets(df_contr: pd.DataFrame, df_gt: pd.DataFrame) -> pd.DataFrame:
@@ -27,9 +27,55 @@ def create_train_test(df: pd.DataFrame, persons: List[str]) -> List[pd.DataFrame
     :return: List[pd.DataFrrame], the train and test data sets
     """
     random.shuffle(persons)
-    tranining_persons = persons[0:int(len(persons)*0.7)]
-    test_persons = persons[int(len(persons)*0.7):]
+    tranining_persons = persons[0:int(len(persons) * 0.7)]
+    test_persons = persons[int(len(persons) * 0.7):]
     df_train = df[df["personId"].isin(tranining_persons)]
     df_test = df[df["personId"].isin(test_persons)]
     return [df_train, df_test]
 
+
+def create_contribution_pairs(df: pd.DataFrame, n: int) -> pd.DataFrame:
+    """
+    creates pairs of contributions
+    :param df: pd.DataFrame
+    :param n: int, only take every nt-h negative pair into the traning set
+    :return df_pairs:  pd.DataFrame
+    """
+    columns = ['contribution_id',
+               'first_name_cleaned',
+               'middle_name_cleaned',
+               'last_name_cleaned',
+               'full_name_cleaned',
+               'workplace_cleaned',
+               'workplace_locations',
+               'focus_areas_cleaned',
+               'orgs_cleaned',
+               'gpes_cleaned',
+               'personId']
+
+    columns_part_2 = [c + "_2nd" for c in columns]
+
+    array = df[columns].values
+    data_dict = {}
+
+    count = 0
+    for k in range(0, array.shape[0]):
+        if k % 250 == 0:
+            print("created pairs for", k, " of ", array.shape[0], " contributions")
+        for m in range(k, array.shape[0]):
+            values1 = array[k]
+            values2 = array[m]
+            if values1[10] == values2[10]:
+                values = np.concatenate([values1, values2], axis=0)
+                data_dict["row_" + str(k) + "_" + str(m)] = values
+            else:
+                count += 1
+                if count % n == 0:
+                    values = np.concatenate([values1, values2], axis=0)
+                    data_dict["row_" + str(k) + "_" + str(m)] = values
+
+    columns.extend(columns_part_2)
+    df_pairs = pd.DataFrame.from_dict(data_dict, orient='index', columns=columns)
+    df_pairs["same_person"] = df_pairs["personId_2nd"] == df_pairs["personId"]
+
+    return df_pairs

@@ -12,10 +12,10 @@ def clean_name(df: pd.DataFrame, col: str) -> pd.DataFrame:
     :param col: str, name of the column
     :return: pd.DataFrame
     """
-    df[col + "_cleaned"] = df[col].str.replace(".", "")
-    df[col + "_cleaned"] = df[col + "_cleaned"].str.replace("-", " ")
+    df[col + "_cleaned"] = df[col].str.replace(".", "", regex=True)
+    df[col + "_cleaned"] = df[col + "_cleaned"].str.replace("-", " ", regex=True)
     df[col + "_cleaned"] = df[col + "_cleaned"].str.lower()
-    df[col + "_cleaned"] = df[col + "_cleaned"].str.replace(' +', ' ')
+    df[col + "_cleaned"] = df[col + "_cleaned"].str.replace(' +', ' ', regex=True)
     return df
 
 
@@ -80,5 +80,6 @@ def cleaning_procedure(df: pd.DataFrame) -> pd.DataFrame:
                 "focus_areas",
                 "gpes",
                 "orgs"]
+
     df = df.drop(droplist, axis=1)
     return df
