@@ -6,7 +6,7 @@ from AND.model.rf_classifier import *
 from AND.training.data_preparation import *
 from AND.model.feature_engineering import *
 from AND.model.graph import *
-
+from AND.training.evaluation import *
 def run_traning():
     logger.logging.info("##----------------------------------------")
     logger.logging.info("Start training model")
@@ -70,8 +70,11 @@ def run_traning():
     profiles = get_disconnected_subgraphs(contribution_graph)
     file_util.report_profiles(profiles,df_test)
 
-    # evaluate performance
-    # file_util.report_test_results(test_results)
+    # ----- evaluate performance
+    logger.logging.info("## Evaluating test set results")
+    mean_purity, mean_fragmentation = evaluate_profiles(profiles, gt)
+    scores = estimate_classification_scores(df_test)
+    file_util.report_test_results(mean_purity, mean_fragmentation,scores)
 
 if __name__ == "__main__":
     run_traning()

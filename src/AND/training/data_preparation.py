@@ -3,6 +3,7 @@ from typing import List
 import random
 import numpy as np
 import AND.utils.logger as logger
+
 __all__ = ['combine_data_sets', 'create_train_test', 'create_contribution_pairs']
 
 
@@ -18,7 +19,7 @@ def combine_data_sets(df_contr: pd.DataFrame, df_gt: pd.DataFrame) -> pd.DataFra
     return df_contr
 
 
-def create_train_test(df: pd.DataFrame, persons: List[str], ratio:float) -> List[pd.DataFrame]:
+def create_train_test(df: pd.DataFrame, persons: List[str], ratio: float) -> List[pd.DataFrame]:
     """
     makes a train test split of the data set such that x % of the personId's are in the training set
     and 1-x % are in the test set
@@ -62,7 +63,7 @@ def create_contribution_pairs(df: pd.DataFrame, n: int) -> pd.DataFrame:
     count = 0
     for k in range(0, array.shape[0]):
         if k % 1000 == 0:
-            logger.logging.info(">>> Created pairs for " + str(k) +  " of " + str( array.shape[0]) + " contributions")
+            logger.logging.info(">>> Created pairs for " + str(k) + " of " + str(array.shape[0]) + " contributions")
         for m in range(k, array.shape[0]):
             values1 = array[k]
             values2 = array[m]
