@@ -2,7 +2,7 @@ import pandas as pd
 from typing import List
 import random
 import numpy as np
-
+import AND.utils.logger as logger
 __all__ = ['combine_data_sets', 'create_train_test', 'create_contribution_pairs']
 
 
@@ -18,17 +18,18 @@ def combine_data_sets(df_contr: pd.DataFrame, df_gt: pd.DataFrame) -> pd.DataFra
     return df_contr
 
 
-def create_train_test(df: pd.DataFrame, persons: List[str]) -> List[pd.DataFrame]:
+def create_train_test(df: pd.DataFrame, persons: List[str], ratio:float) -> List[pd.DataFrame]:
     """
-    makes a 80:20 train test split, such that 80 % of the authors are in the
-    training data set and 20% of authors are in the test data set
+    makes a train test split of the data set such that x % of the personId's are in the training set
+    and 1-x % are in the test set
     :param df: pd.DataFrame , the trnaing data set
     :param persons: List[str], list of person ID's
+    :param ratio: float, ratio of the train test split
     :return: List[pd.DataFrrame], the train and test data sets
     """
-    random.shuffle(persons)
-    tranining_persons = persons[0:int(len(persons) * 0.7)]
-    test_persons = persons[int(len(persons) * 0.7):]
+    random.Random(4).shuffle(persons)
+    tranining_persons = persons[0:int(len(persons) * ratio)]
+    test_persons = persons[int(len(persons) * ratio):]
     df_train = df[df["personId"].isin(tranining_persons)]
     df_test = df[df["personId"].isin(test_persons)]
     return [df_train, df_test]
@@ -61,7 +62,7 @@ def create_contribution_pairs(df: pd.DataFrame, n: int) -> pd.DataFrame:
     count = 0
     for k in range(0, array.shape[0]):
         if k % 1000 == 0:
-            print("created pairs for", k, " of ", array.shape[0], " contributions")
+            logger.logging.info(">>> Created pairs for " + str(k) +  " of " + str( array.shape[0]) + " contributions")
         for m in range(k, array.shape[0]):
             values1 = array[k]
             values2 = array[m]

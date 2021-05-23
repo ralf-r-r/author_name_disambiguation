@@ -21,6 +21,6 @@ def read_configurations(config_file_name: str = "config.yaml") -> dict:
         )
         raise FileNotFoundError
     logger.logging.info(
-        "Loaded config file successfully"
+        ">>> Loaded config file successfully"
     )
     return configuration_file
