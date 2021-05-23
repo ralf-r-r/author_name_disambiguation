@@ -5,6 +5,7 @@ import AND.utils.logger as logger
 
 __all__ = ['read_configurations']
 
+
 def read_configurations(config_file_name: str = "config.yaml") -> dict:
     """
     reads the config file

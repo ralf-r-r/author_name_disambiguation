@@ -19,24 +19,25 @@ def evaluate_profiles(profiles: List[set], df_gt: pd.DataFrame) -> Tuple[float]:
         mapping[contributionId] = personsId
 
     purities = []
-    for profile in profiles["profiles"]:
+    for profile in profiles:
         personIds = [mapping[contribution] for contribution in profile]
         c = Counter(personIds)
         purities.append(c.most_common(1)[0][1] / len(personIds))
 
-    mean_purity = np.mean(purities)
+    mean_purity = float(np.mean(purities))
 
     personId_list = []
-    for profile in profiles["profiles"]:
+    for profile in profiles:
         personIds = set([mapping[contribution] for contribution in profile])
         personId_list.extend(personIds)
 
     c = Counter(personId_list)
-    mean_fragmentation = np.mean(list(c.values()))
+    mean_fragmentation = float(np.mean(list(c.values())))
     return mean_purity, mean_fragmentation
 
-def estimate_classification_scores(df:pd.DataFrame) -> dict:
+
+def estimate_classification_scores(df: pd.DataFrame) -> dict:
     y_true = df["same_person"].values
     y_pred = df["prediction"].values
-    results = classification_report(y_true, y_pred, output_dict= True)
+    results = classification_report(y_true, y_pred, output_dict=True)
     return results["macro avg"]

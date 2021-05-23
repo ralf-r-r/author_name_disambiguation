@@ -7,6 +7,8 @@ from AND.training.data_preparation import *
 from AND.model.feature_engineering import *
 from AND.model.graph import *
 from AND.training.evaluation import *
+
+
 def run_traning():
     logger.logging.info("##----------------------------------------")
     logger.logging.info("Start training model")
@@ -19,7 +21,6 @@ def run_traning():
 
     logger.logging.info("## Loading data sets")
     data, gt, persons = file_util.read_data()
-    data = data.sample(500)
 
     logger.logging.info("## Combine ground truth and contributions data")
     df = combine_data_sets(data, gt)
@@ -68,13 +69,18 @@ def run_traning():
     # ----- create author profiles -> find the disconnected subgraphs
     logger.logging.info("## Creating the author profiles")
     profiles = get_disconnected_subgraphs(contribution_graph)
-    file_util.report_profiles(profiles,df_test)
+    file_util.report_profiles(profiles, df_test)
 
     # ----- evaluate performance
     logger.logging.info("## Evaluating test set results")
     mean_purity, mean_fragmentation = evaluate_profiles(profiles, gt)
     scores = estimate_classification_scores(df_test)
-    file_util.report_test_results(mean_purity, mean_fragmentation,scores)
+    file_util.report_test_results(mean_purity, mean_fragmentation, scores)
+
+    logger.logging.info("##----------------------------------------")
+    logger.logging.info("Completed successfully")
+    logger.logging.info("##----------------------------------------")
+
 
 if __name__ == "__main__":
     run_traning()

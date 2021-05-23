@@ -61,12 +61,12 @@ class FileUtil:
         with open(file, 'wb') as handle:
             pickle.dump(result_object, handle)
 
-    def report_test_results(self,mean_purity:float, mean_fragmentation:float,scores:dict):
+    def report_test_results(self, mean_purity: float, mean_fragmentation: float, scores: dict):
         result_object = dict(
             config=self.config,
             mean_purity=mean_purity,
-            mean_fragmentation = mean_fragmentation,
-            classificatin_scores = scores
+            mean_fragmentation=mean_fragmentation,
+            classificatin_scores=scores
         )
 
         file = self.results_test_path + 'scores.pkl'
